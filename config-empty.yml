@@ -1,0 +1,10 @@
+
+website-address: ""
+website-ssh-port: 22
+website-ssh-host-key: ""
+website-mysql-container: ""
+website-mysql-root-pass: ""
+ssh-public-key-path: ""
+ssh-private-key-path: ""
+ssh-user: ""
+backup-destination-path: "
