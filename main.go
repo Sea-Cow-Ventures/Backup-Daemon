@@ -59,13 +59,13 @@ func main() {
 	//First Run
 	runWebsiteBackup()
 
-	/*for {
+	for {
 		select {
 		case interruptType := <-interrupt:
 			logger.Println(interruptType.String())
 			os.Exit(0)
 		}
-	}*/
+	}
 }
 
 func runWebsiteBackup() {
