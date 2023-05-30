@@ -23,7 +23,7 @@ type Config struct {
 	WebsiteSSHHostKey     string `yaml:"website-ssh-host-key"`
 	WebsiteMysqlContainer string `yaml:"website-mysql-container"`
 	WebsiteMysqlRootPass  string `yaml:"website-mysql-root-pass"`
-	SSHPublicKey          string `yaml:"ssh-public-key-path"`
+	SSHPublicKey          string `ya ml:"ssh-public-key-path"`
 	SSHPrivateKey         string `yaml:"ssh-private-key-path"`
 	SSHUser               string `yaml:"ssh-user"`
 	BackupDestination     string `yaml:"backup-destination-path"`
@@ -93,13 +93,10 @@ func runWebsiteBackup() {
 	t := time.Now()
 	backupName := fmt.Sprintf("backup-%s-%s.tar.gz", t.Format("2006-01-02"), t.Format("15-04-05"))
 
-	updatedCommands := make([]string, len(Commands))
-
-	// Replace the placeholder with the container name
-	updatedCommands = append(updatedCommands[:6], strings.ReplaceAll(Commands[6], "__CONTAINER_NAME__", config.WebsiteMysqlContainer))
-
-	// Replace the placeholder with the backup name
-	updatedCommands[8] = strings.ReplaceAll(Commands[8], "__BACKUP_NAME__", backupName)
+	for i := range Commands {
+		Commands[i] = strings.ReplaceAll(Commands[i], "__BACKUP_NAME__", backupName)
+		Commands[i] = strings.ReplaceAll(Commands[i], "__CONTAINER_NAME__", config.WebsiteMysqlContainer)
+	}
 
 	stdin, err := session.StdinPipe()
 	if err != nil {
@@ -110,7 +107,7 @@ func runWebsiteBackup() {
 		handleErr(fmt.Errorf("failed to start session: %w", err))
 	}
 
-	for _, command := range updatedCommands {
+	for _, command := range Commands {
 		if _, err := fmt.Fprintf(stdin, "%s\n", command); err != nil {
 			handleErr(fmt.Errorf("failed to write command to stdin: %w", err))
 		}
